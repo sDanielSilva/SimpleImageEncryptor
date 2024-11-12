@@ -1,6 +1,6 @@
 # 🔐 Simple Image Encryptor - DES/AES Encryption
 
-Welcome to **Simple Image Encryptor**, a sleek and modern tool that allows you to **encrypt and decrypt images** using DES and AES encryption with two modes: **ECB** and **CBC**. This project is a demonstration of how DES and AES encryption works in a simple, easy-to-understand way, making it perfect for learning and experimenting with cryptography!
+Welcome to **Simple Image Encryptor**, a tool that allows you to **encrypt and decrypt images** using DES and AES encryption with two modes: **ECB** and **CBC**. This project is a demonstration of how DES and AES encryption works in a simple, easy-to-understand way, making it perfect for learning and experimenting with cryptography!
 
 ✨ **Key Features:**
 - DES and AES encryption in **ECB** and **CBC** modes
