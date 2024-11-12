@@ -12,20 +12,11 @@ Welcome to **Simple Image Encryptor**, a sleek and modern tool that allows you t
 
 Take a look at how the encryption process transforms your images!
 
-<div style="display: flex; justify-content: space-around;">
-  <div style="text-align: center;">
-    <strong>Original Image</strong><br>
-    <img src="images/original.bmp" alt="Original Image" width="200" />
-  </div>
-  <div style="text-align: center;">
-    <strong>Encrypted Image (ECB Mode)</strong><br>
-    <img src="images/encryptedECB.bmp" alt="Encrypted Image ECB" width="200" />
-  </div>
-  <div style="text-align: center;">
-    <strong>Encrypted Image (CBC Mode)</strong><br>
-    <img src="images/encryptedCBC.bmp" alt="Encrypted Image CBC" width="200" />
-  </div>
-</div>
+| **Original Image**                | **Encrypted Image (ECB Mode)**      | **Encrypted Image (CBC Mode)**     |
+|-----------------------------------|-------------------------------------|------------------------------------|
+| ![Original Image](images/original.bmp) | ![Encrypted Image ECB](images/encryptedECB.bmp) | ![Encrypted Image CBC](images/encryptedCBC.bmp) |
+
+
 
 ## 🚀 Getting Started
 
