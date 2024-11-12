@@ -13,13 +13,13 @@ Welcome to **Simple Image Encryptor**, a sleek and modern tool that allows you t
 Take a look at how the encryption process transforms your images!
 
 - **Original Image**:
-![Original Image](images/original_image.jpg)
+![Original Image](images/original.bmp)
 
 - **Encrypted Image (ECB Mode)**:
-![Encrypted Image ECB](images/encryptedECB.jpg)
+![Encrypted Image ECB](images/encryptedECB.bmp)
 
 - **Encrypted Image (CBC Mode)**:
-![Encrypted Image CBC](images/encryptedCBC.jpg)
+![Encrypted Image CBC](images/encryptedCBC.bmp)
 
 ## 🚀 Getting Started
 
