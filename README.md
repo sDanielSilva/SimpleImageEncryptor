@@ -94,7 +94,7 @@ Enter output file path: images/encrypted.bmp
 
 Here’s a quick look at what’s coming next:
 
-- Support for more encryption algorithms (RSA, DES)
+- Support for more encryption algorithms (RSA, IDEA)
 - Enhanced UI/UX (GUI for image upload, encryption, and download)
 
 ## 🤝 Contributing
