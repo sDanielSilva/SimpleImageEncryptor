@@ -12,10 +12,13 @@ Welcome to **Simple Image Encryptor**, a tool that allows you to **encrypt and d
 
 Take a look at how the encryption process transforms your images!
 
-| **Original Image**                | **Encrypted Image (ECB Mode)**      | **Encrypted Image (CBC Mode)**     |
+| **Original Image**                | **Encrypted Image (AES/ECB)**      | **Encrypted Image (AES/CBC)**     |
 |-----------------------------------|-------------------------------------|------------------------------------|
 | ![Original Image](images/original.bmp) | ![Encrypted Image ECB](images/encryptedECB.bmp) | ![Encrypted Image CBC](images/encryptedCBC.bmp) |
 
+| **Original Image**                | **Encrypted Image (DES/ECB)**      | **Encrypted Image (DES/CBC)**     |
+|-----------------------------------|-------------------------------------|------------------------------------|
+| ![Original Image](images/original.bmp) | ![Encrypted Image ECB](images/ECBDES.bmp) | ![Encrypted Image CBC](images/CBCDES.bmp) |
 
 
 ## 🚀 Getting Started
@@ -91,7 +94,7 @@ Enter output file path: images/encrypted.bmp
 
 Here’s a quick look at what’s coming next:
 
-- Support for more encryption algorithms (RSA, DES)
+- Support for more encryption algorithms (RSA, IDEA)
 - Enhanced UI/UX (GUI for image upload, encryption, and download)
 
 ## 🤝 Contributing
