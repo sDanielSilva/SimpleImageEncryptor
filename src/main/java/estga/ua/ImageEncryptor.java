@@ -8,50 +8,50 @@ import java.util.Scanner;
 
 public class ImageEncryptor {
 
-    // Generate key based on algorithm and key size
     private static SecretKey generateKey(String algorithm, int keySize) throws Exception {
         KeyGenerator keyGen = KeyGenerator.getInstance(algorithm);
         keyGen.init(keySize);
         return keyGen.generateKey();
     }
 
-    // Encrypts or decrypts file data based on algorithm, mode, and operation
     private static byte[] processFile(byte[] data, SecretKey key, String algorithm, String mode, int opMode) throws Exception {
         Cipher cipher = Cipher.getInstance(algorithm + "/" + mode + "/PKCS5Padding");
         if ("CBC".equals(mode)) {
             IvParameterSpec iv = new IvParameterSpec(generateIV(cipher.getBlockSize()));
             cipher.init(opMode, key, iv);
         } else {
-            cipher.init(opMode, key); // ECB mode
+            cipher.init(opMode, key);
         }
         return cipher.doFinal(data);
     }
 
-    // Save encryption key to a file
     private static void saveKey(SecretKey key, String algorithm) throws IOException {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("encryptionKey." + algorithm.toLowerCase()))) {
             out.writeObject(key);
         }
     }
 
-    // Load encryption key from file
     private static SecretKey loadKey(String path) throws Exception {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(path))) {
             return (SecretKey) in.readObject();
         }
     }
 
-    // Generate random IV for CBC mode
     private static byte[] generateIV(int blockSize) {
         byte[] iv = new byte[blockSize];
         new SecureRandom().nextBytes(iv);
         return iv;
     }
 
-    // Main method for encryption and decryption
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
             while (true) {
+                System.out.print("Select file type (1 - Image, 2 - Other) [ENTER to quit]: ");
+                String fileTypeChoice = scanner.nextLine();
+                if (fileTypeChoice.isEmpty()) return;
+
+                boolean isImage = "1".equals(fileTypeChoice);
+
                 int operation = getChoice(scanner, "Choose operation (1 - Encrypt, 2 - Decrypt) [ENTER to quit]: ", 1, 2);
                 if (operation == -1) return;
 
@@ -59,7 +59,6 @@ public class ImageEncryptor {
                 String algorithm = null;
                 String mode = getMode(scanner);
                 if (mode == null) return;
-
 
                 if (operation == Cipher.ENCRYPT_MODE) {
                     algorithm = getAlgorithm(scanner);
@@ -76,7 +75,7 @@ public class ImageEncryptor {
                         return;
                     }
                 } else {
-                    String keyFilePath = getFilePath(scanner, "Enter key file path for decryption (e.g. 'encryptionKey.des' || encryptionKey.aes') [ENTER to quit]: ");
+                    String keyFilePath = getFilePath(scanner, "Enter key file path for decryption (e.g., 'encryptionKey.des' || encryptionKey.aes') [ENTER to quit]: ");
                     if (keyFilePath == null || keyFilePath.trim().isEmpty()) {
                         return;
                     }
@@ -100,17 +99,20 @@ public class ImageEncryptor {
                 String inputFilePath = getFilePath(scanner, "Enter input file path: [ENTER to quit]: ");
                 if (inputFilePath == null) return;
 
-                String outputFilePath = getOutputFilePath(scanner);
+                String outputFilePath = getOutputFilePath(scanner, isImage);
 
-                processAndSaveFile(inputFilePath, outputFilePath, key, algorithm, mode, operation);
+                if (isImage) {
+                    processAndSaveImageFile(inputFilePath, outputFilePath, key, algorithm, mode, operation);
+                } else {
+                    processAndSaveOtherFile(inputFilePath, outputFilePath, key, algorithm, mode, operation);
+                }
             }
         } catch (Exception e) {
             System.out.println("[ERROR]: " + e.getMessage());
         }
     }
 
-    // Process and save the file content
-    private static void processAndSaveFile(String inputFilePath, String outputFilePath, SecretKey key, String algorithm, String mode, int operation) {
+    private static void processAndSaveImageFile(String inputFilePath, String outputFilePath, SecretKey key, String algorithm, String mode, int operation) {
         try {
             byte[] fileContent = readFile(inputFilePath);
             if (fileContent == null) return;
@@ -127,13 +129,29 @@ public class ImageEncryptor {
                 fos.write(processedData);
             }
 
-            System.out.println((operation == Cipher.ENCRYPT_MODE ? "Encrypted" : "Decrypted") + " successfully to: " + outputFilePath + "\n");
+            System.out.println((operation == Cipher.ENCRYPT_MODE ? "Encrypted" : "Decrypted") + " image successfully to: " + outputFilePath + "\n");
+        } catch (Exception e) {
+            System.out.println("[ERROR] processing image file: " + e.getMessage());
+        }
+    }
+
+    private static void processAndSaveOtherFile(String inputFilePath, String outputFilePath, SecretKey key, String algorithm, String mode, int operation) {
+        try {
+            byte[] fileContent = readFile(inputFilePath);
+            if (fileContent == null) return;
+
+            byte[] processedData = processFile(fileContent, key, algorithm, mode, operation);
+
+            try (FileOutputStream fos = new FileOutputStream(outputFilePath)) {
+                fos.write(processedData);
+            }
+
+            System.out.println((operation == Cipher.ENCRYPT_MODE ? "Encrypted" : "Decrypted") + " file successfully to: " + outputFilePath + "\n");
         } catch (Exception e) {
             System.out.println("[ERROR] processing file: " + e.getMessage());
         }
     }
 
-    // Read file content
     private static byte[] readFile(String filePath) {
         try {
             return new FileInputStream(filePath).readAllBytes();
@@ -143,7 +161,6 @@ public class ImageEncryptor {
         }
     }
 
-    // Get user choice input
     private static int getChoice(Scanner scanner, String prompt, int min, int max) {
         while (true) {
             System.out.print(prompt);
@@ -152,7 +169,7 @@ public class ImageEncryptor {
 
             try {
                 int choice = Integer.parseInt(input);
-                if (choice >= min && choice <= max)return choice;
+                if (choice >= min && choice <= max) return choice;
                 else System.out.println("Invalid choice. Please try again.");
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please try again.");
@@ -160,19 +177,16 @@ public class ImageEncryptor {
         }
     }
 
-    // Get algorithm choice
     private static String getAlgorithm(Scanner scanner) {
         int choice = getChoice(scanner, "Choose algorithm (1 - AES, 2 - DES) [ENTER to quit]: ", 1, 2);
         return choice == 1 ? "AES" : choice == 2 ? "DES" : null;
     }
 
-    // Get mode choice (ECB or CBC)
     private static String getMode(Scanner scanner) {
         int choice = getChoice(scanner, "Choose mode (1 - ECB, 2 - CBC) [ENTER to quit]: ", 1, 2);
         return choice == 1 ? "ECB" : choice == 2 ? "CBC" : null;
     }
 
-    // Get key size for AES
     private static int getKeySize(Scanner scanner, String algorithm) {
         if ("DES".equals(algorithm)) return 56;
         while (true) {
@@ -190,7 +204,6 @@ public class ImageEncryptor {
         }
     }
 
-    // Validate file path
     private static String getFilePath(Scanner scanner, String prompt) {
         while (true) {
             System.out.print(prompt);
@@ -202,19 +215,17 @@ public class ImageEncryptor {
         }
     }
 
-    // Get output file path with default extension
-    private static String getOutputFilePath(Scanner scanner) {
-        System.out.print("Enter output file path: [ENTER to quit]: ");
+    private static String getOutputFilePath(Scanner scanner, boolean isImage) {
+        System.out.print("Enter output file path [ENTER to quit]: ");
         String outputFilePath = scanner.nextLine().trim();
-        if (!outputFilePath.contains(".")) outputFilePath += ".bmp";
+        if (isImage && !outputFilePath.contains(".")) outputFilePath += ".bmp";
         return outputFilePath;
     }
 
-    // Determine algorithm from key file extension
     private static String getAlgorithmFromKeyFile(String keyFilePath) {
         if (keyFilePath.endsWith(".aes")) return "AES";
         if (keyFilePath.endsWith(".des")) return "DES";
-        System.out.println("Invalid key file extension. Use '.aes' for AES or '.des' for DES.");
+        System.out.println("Invalid key file extension. Please use '.aes' or '.des'.");
         return null;
     }
 }
